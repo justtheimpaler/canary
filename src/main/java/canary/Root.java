@@ -5,9 +5,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,14 +26,21 @@ public class Root {
   private static final Logger log = Logger.getLogger(Root.class.getName());
 
   private static final String DEFAULT_CONFIG_FILE = "canary.yaml";
+  private static final long DEFAULT_WARNING_THRESHOLD = 5000;
+  private static final long DEFAULT_CRITICAL_THRESHOLD = 10000;
 
   private String root;
   private String[] excludeNamePatterns;
-  private String[] excludeRelativePaths;
-  private long warningThreshold;
-  private long criticalThreshold;
+  private String[] excludePaths;
+  private Long warningThreshold;
+  private Long criticalThreshold;
 
+  private Path base;
+
+  private long warnThreshold;
+  private long critThreshold;
   private List<Pattern> namePatterns;
+  private Set<String> pathsExclusions;
 
   public static List<Root> load() throws IOException {
     return load(DEFAULT_CONFIG_FILE);
@@ -61,11 +72,20 @@ public class Root {
   }
 
   private void validate() {
-    this.namePatterns = Arrays.stream(this.excludeNamePatterns).map(n -> Pattern.compile(n))
-        .collect(Collectors.toList());
+    this.base = Paths.get(this.root).normalize();
+    this.namePatterns = this.excludeNamePatterns == null ? new ArrayList<>()
+        : Arrays.stream(this.excludeNamePatterns).map(n -> Pattern.compile(n)).collect(Collectors.toList());
+    this.pathsExclusions = this.excludePaths == null ? new HashSet<>()
+        : Arrays.stream(this.excludePaths).collect(Collectors.toSet());
+    this.warnThreshold = this.warningThreshold == null ? DEFAULT_WARNING_THRESHOLD : this.getWarningThreshold();
+    this.critThreshold = this.criticalThreshold == null ? DEFAULT_CRITICAL_THRESHOLD : this.getCriticalThreshold();
   }
 
   public boolean excludes(File f) {
+    String rp = this.base.relativize(f.toPath()).toString();
+    if (this.pathsExclusions.contains(rp)) {
+      return true;
+    }
     for (Pattern p : this.namePatterns) {
       Matcher m = p.matcher(f.getName());
       if (m.find()) {
@@ -93,16 +113,16 @@ public class Root {
     this.excludeNamePatterns = excludeNamePatterns;
   }
 
-  public String[] getExcludeRelativePaths() {
-    return excludeRelativePaths;
+  public String[] getExcludePaths() {
+    return excludePaths;
   }
 
-  public void setExcludeRelativePaths(String[] excludeRelativePaths) {
-    this.excludeRelativePaths = excludeRelativePaths;
+  public void setExcludePaths(String[] excludePaths) {
+    this.excludePaths = excludePaths;
   }
 
   public long getWarningThreshold() {
-    return warningThreshold;
+    return warnThreshold;
   }
 
   public void setWarningThreshold(long warningThreshold) {
@@ -110,7 +130,7 @@ public class Root {
   }
 
   public long getCriticalThreshold() {
-    return criticalThreshold;
+    return critThreshold;
   }
 
   public void setCriticalThreshold(long criticalThreshold) {
@@ -127,9 +147,9 @@ public class Root {
 
   @Override
   public String toString() {
-    return "Root [root=" + root + ", excludeNamePatterns=" + Arrays.toString(excludeNamePatterns)
-        + ", excludeRelativePaths=" + Arrays.toString(excludeRelativePaths) + ", warningThreshold=" + warningThreshold
-        + ", criticalThreshold=" + criticalThreshold + ", namePatterns=" + namePatterns + "]";
+    return "Root [root=" + root + ", excludeNamePatterns=" + Arrays.toString(excludeNamePatterns) + ", excludePaths="
+        + Arrays.toString(excludePaths) + ", warningThreshold=" + warnThreshold + ", criticalThreshold=" + critThreshold
+        + ", namePatterns=" + namePatterns + "]";
   }
 
 }

@@ -1,7 +1,6 @@
 package canary;
 
 import java.io.File;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -9,8 +8,6 @@ import java.util.logging.Logger;
 public class Scanner {
 
   private static final Logger log = Logger.getLogger(Scanner.class.getName());
-
-  private static DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
   private List<Root> roots;
 
@@ -35,7 +32,7 @@ public class Scanner {
         log.info("Scanning root folder: " + dir);
         ScannerStats stats = new ScannerStats();
         scanFolder(dir, r, stats);
-        log.info(" - Stats: counted " + stats.getTotalSubfolders() + " subfolders and " + stats.getTotalFiles()
+        log.info(" - Stats: scanned " + stats.getTotalSubfolders() + " subfolders and " + stats.getTotalFiles()
             + " files --  with " + stats.getTotalCriticals() + " critical and " + stats.getTotalWarnings()
             + " warnings");
         totalStats.aggregate(stats);
