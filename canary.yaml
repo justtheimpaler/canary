@@ -1,0 +1,12 @@
+---
+root: /home/valarcon/apps/apache-ant-1.10.5
+excludeNamePatterns: [ abc,def2,type.* ]
+excludeRelativePaths: [xyz,yuv   ]
+warningThreshold: 50
+criticalThreshold: 100
+---
+root: folder2
+excludeNamePatterns: [ abc,def ]
+excludeRelativePaths: [ ghi,  jkl ]
+warningThreshold: 5000
+criticalThreshold: 10000
