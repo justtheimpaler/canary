@@ -1,8 +1,8 @@
 # Canary
 
-Canary finds subfolders with too many files starting from a base folder. Its goal is to detect if a folders that are growing too much and can make the application slow, or worse can start crashing applications.
+Canary finds subfolders with too many files starting from a base folder. Its goal is to detect if folders are silently growing beyond a predefined size threshold, something that could potentially make one or more applications slow or even crash.
 
-Canary can be run as an automated process periodically and connected to other appliances to produce alerts when findings are encountered, so silently growing folders are noticed.
+Canary can be run as an automated process periodically to log warnings and critical levels for one or more folder roots. This log can be connected to monitoring tools to produce alerts for these findings.
 
 ## Defaults
 
