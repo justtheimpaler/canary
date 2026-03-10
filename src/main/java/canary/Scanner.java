@@ -1,11 +1,14 @@
 package canary;
 
 import java.io.File;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Scanner {
+
+  private static final Logger log = Logger.getLogger(Scanner.class.getName());
 
   private static DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
@@ -19,20 +22,23 @@ public class Scanner {
     return new Scanner(roots);
   }
 
-  public void scan() {
+  public void scan(ScannerStats totalStats) {
     for (Root r : this.roots) {
       File dir = new File(r.getRoot());
       if (!dir.exists()) {
-        critical("Invalid root folder: " + dir + "; this folder doesn't exist.");
+        log.log(Level.SEVERE, "Invalid root folder: " + dir + "; this folder doesn't exist.");
+        totalStats.countCritical();
       } else if (!dir.isDirectory()) {
-        critical("Invalid root folder: " + dir + "; a file with that name exits, but it's not a folder.");
+        log.log(Level.SEVERE, "Invalid root folder: " + dir + "; a file with that name exits, but it's not a folder.");
+        totalStats.countCritical();
       } else {
-        info("Scanning root folder: " + dir);
+        log.info("Scanning root folder: " + dir);
         ScannerStats stats = new ScannerStats();
         scanFolder(dir, r, stats);
-        info(" - Stats: counted " + stats.getTotalSubfolders() + " subfolders and " + stats.getTotalFiles()
+        log.info(" - Stats: counted " + stats.getTotalSubfolders() + " subfolders and " + stats.getTotalFiles()
             + " files --  with " + stats.getTotalCriticals() + " critical and " + stats.getTotalWarnings()
             + " warnings");
+        totalStats.aggregate(stats);
       }
     }
   }
@@ -41,12 +47,12 @@ public class Scanner {
     File[] files = dir.listFiles();
     if (files != null) {
       if (files.length > root.getCriticalThreshold()) {
-        critical("The folder " + dir + " has " + files.length
+        log.log(Level.SEVERE, "The folder " + dir + " has " + files.length
             + " files in it, and that exceeds the critical threshold of " + root.getCriticalThreshold() + ".");
         stats.countCritical();
       } else if (files.length > root.getWarningThreshold()) {
-        warn("The folder " + dir + " has " + files.length + " files in it, and that exceeds the warning threshold of "
-            + root.getWarningThreshold() + ".");
+        log.warning("The folder " + dir + " has " + files.length
+            + " files in it, and that exceeds the warning threshold of " + root.getWarningThreshold() + ".");
         stats.countWarning();
       }
       for (File f : files) {
@@ -60,59 +66,6 @@ public class Scanner {
         }
       }
     }
-  }
-
-  private static class ScannerStats {
-
-    private long totalSubfolders = 0;
-    private long totalFiles = 0;
-    private long totalWarnings = 0;
-    private long totalCriticals = 0;
-
-    public void countSubfolder() {
-      this.totalSubfolders++;
-    }
-
-    public void countFile() {
-      this.totalFiles++;
-    }
-
-    public void countWarning() {
-      this.totalWarnings++;
-    }
-
-    public void countCritical() {
-      this.totalCriticals++;
-    }
-
-    public long getTotalSubfolders() {
-      return totalSubfolders;
-    }
-
-    public long getTotalFiles() {
-      return totalFiles;
-    }
-
-    public long getTotalWarnings() {
-      return totalWarnings;
-    }
-
-    public long getTotalCriticals() {
-      return totalCriticals;
-    }
-
-  }
-
-  private void info(String message) {
-    System.out.println("INFO " + FMT.format(LocalDateTime.now()) + " - " + message);
-  }
-
-  private void warn(String message) {
-    System.out.println("WARN " + FMT.format(LocalDateTime.now()) + " - " + message);
-  }
-
-  private void critical(String message) {
-    System.out.println("CRITICAL " + FMT.format(LocalDateTime.now()) + " - " + message);
   }
 
 }

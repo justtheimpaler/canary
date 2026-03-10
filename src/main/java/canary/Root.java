@@ -2,11 +2,13 @@ package canary;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -16,6 +18,8 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 public class Root {
+
+  private static final Logger log = Logger.getLogger(Root.class.getName());
 
   private static final String DEFAULT_CONFIG_FILE = "canary.yaml";
 
@@ -32,17 +36,24 @@ public class Root {
   }
 
   public static List<Root> load(String configFile) throws IOException {
+    if (configFile == null) {
+      configFile = DEFAULT_CONFIG_FILE;
+    }
     Yaml yaml = new Yaml(new Constructor(Root.class, new LoaderOptions()));
 //    Yaml yaml = new Yaml(new SafeConstructor(Root.class, new LoaderOptions()));
     List<Root> roots = new ArrayList<>();
-    try (InputStream is = new FileInputStream(configFile)) {
-      Iterable<Object> all = yaml.loadAll(is);
-      System.out.println(all.getClass().getName());
-      for (Object o : all) {
-        Root root = (Root) o;
-        System.out.println(o.getClass().getName() + ": " + o);
-        roots.add(root);
-        root.validate();
+    File config = new File(configFile);
+    if (!config.exists()) {
+      throw new FileNotFoundException("Could not find configuration file: " + configFile);
+    } else {
+      try (InputStream is = new FileInputStream(configFile)) {
+        Iterable<Object> all = yaml.loadAll(is);
+        for (Object o : all) {
+          Root root = (Root) o;
+          roots.add(root);
+          root.validate();
+        }
+        log.info("Loaded configuration from: " + configFile + " (" + roots.size() + " root folders to scan)");
       }
     }
 

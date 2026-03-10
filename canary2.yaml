@@ -1,5 +1,5 @@
 ---
-root: /home/valarcon/apps/apache-ant-1.10.5
+root: ../itextpdf
 excludeNamePatterns: [ abc,def2,type.* ]
 excludeRelativePaths: [xyz,yuv   ]
 warningThreshold: 50
