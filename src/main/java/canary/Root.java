@@ -33,6 +33,7 @@ public class Root {
 
   public static List<Root> load(String configFile) throws IOException {
     Yaml yaml = new Yaml(new Constructor(Root.class, new LoaderOptions()));
+//    Yaml yaml = new Yaml(new SafeConstructor(Root.class, new LoaderOptions()));
     List<Root> roots = new ArrayList<>();
     try (InputStream is = new FileInputStream(configFile)) {
       Iterable<Object> all = yaml.loadAll(is);
