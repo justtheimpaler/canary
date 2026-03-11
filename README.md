@@ -44,7 +44,7 @@ root: /var/apps/myfolder
 root: /opt/shared/logs
 ```
 > [!NOTE]
-> The default thresholds err in the side of caution. Local drives can typically absorb much higher loads, while networked drives have lower capacities. Nowadays, with the current cloud solutions, this limitation is further lowered by the cheaper and cheaper commodity hardware options that are terrible attractive to IT managers, but at the same time, can have silent limitations.
+> The default thresholds err in the side of caution. Local drives can typically absorb much higher loads, while networked drives have lower capacities. Nowadays, with the current cloud solutions, this limitation is further lowered by the cheaper and cheaper commodity hardware options that are terrible attractive to IT managers, but at the same time, can have obscure limitations.
 
 As stated before, each entry can be customized with:
 
