@@ -43,6 +43,8 @@ root: /var/apps/myfolder
 ---
 root: /opt/shared/logs
 ```
+> [!NOTE]
+> The default thresholds err in the side of caution. Local drives can typically absorb much higher loads, while networked drives have lower capacities. Nowadays, with the current cloud solutions, this limitation is further lowered by the cheaper and cheaper commodity hardware options that are terrible attractive to IT managers, but at the same time, can have silent limitations.
 
 As stated before, each entry can be customized with:
 
@@ -65,9 +67,6 @@ The following table define their details:
 > Since the configuration file is a YAML file, the properties can be escaped using the YAML syntax rules. This can be especially useful if the folders include non-typical characters in their names, such as (, ), =, :, ;, etc.
 
 As indicated above, only the `root` property is mandatory for each root folder configuration.
-
-> [!NOTE]
-> The default thresholds err in the side of caution. Local drives can typically absorb much higher loads, while networked drives have lower capacities. Nowadays, with the current cloud solutions, this limitation is further lowered by the cheaper and cheaper commodity hardware options that are terrible attractive to IT managers, but at the same time, can have silent limitations.
 
 We could tweak the example above with a full configuration for the first root folder. We can decide to:
 
