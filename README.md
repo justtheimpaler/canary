@@ -94,7 +94,7 @@ In this example we specified all the optional properties for the first root fold
 To scan the folders specified in the configuration, use the command line and go to the working folder. While in it run Canary, as in:
 
 ```bash
-java -jar canary-1.0.0.jar
+java -jar canary-1.0.3.jar
 ```
 
 It will start scanning all root folders and subfolders and will show any warning and critical alerts, as in:
@@ -118,7 +118,7 @@ subfolders and 80639 files -- Scan time: 00:00:00.040
 If we wanted to specify a different configuration file we can do so by indicating it as a parameter in the command line. For example:
 
 ```bash
-java -jar canary-1.0.0.jar ./config/data-rules.yaml
+java -jar canary-1.0.3.jar ./config/data-rules.yaml
 ```
 
 ## A Final Note
