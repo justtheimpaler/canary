@@ -1,5 +1,5 @@
 ---
-root: ../hf
+root: ../../hf
 #excludeNamePatterns: [ abc,def2,type.* ]
 #excludePaths: [xyz,yuv   ]
 #warningThreshold: 50
