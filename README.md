@@ -103,11 +103,16 @@ It will start scanning all root folders and subfolders and will show any warning
 2026-03-10 18:44:59.959 INFO   - Canary 1.0.0 - build 20260310-224457
 2026-03-10 18:45:00.056 INFO   - Loaded configuration from: canary.yaml (2 root folders to scan)
 2026-03-10 18:45:00.059 INFO   - Scanning root folder: /var/apps/myfolder
-2026-03-10 18:45:00.060 WARN   - The folder /var/apps/myfolder/test/resources/com/itextpdf/text/pdf/pdfcleanup has 3156 files in it, and that exceeds the warning threshold of 2000.
-2026-03-10 18:45:00.061 INFO   -  - Stats: counted 1248 subfolders and 23384 files --  with 0 critical and 1 warnings
-2026-03-10 18:45:00.062 SEVERE - The folder /opt/shared/logs/fonts/cmaps has 17605 files in it, and that exceeds the critical threshold of 10000.
-2026-03-10 18:45:00.099 INFO   -  - Stats: counted 7331 subfolders and 57255 files --  with 1 critical and 0 warnings
-2026-03-10 18:45:00.099 INFO   - Grand total of 1 critical and 1 warnings -- Scanned 8589 subfolders and 80639 files -- Scan time: 00:00:00.040
+2026-03-10 18:45:00.060 WARN   - The folder /var/apps/myfolder/test/resources/com/text/
+pdf/pdfcleanup has 3156 files in it, and that exceeds the warning threshold of 2000.
+2026-03-10 18:45:00.061 INFO   -  - Stats: counted 1248 subfolders and 23384 files -- 
+with 0 critical and 1 warnings
+2026-03-10 18:45:00.062 SEVERE - The folder /opt/shared/logs/fonts/cmaps has 17605 files
+in it, and that exceeds the critical threshold of 10000.
+2026-03-10 18:45:00.099 INFO   -  - Stats: counted 7331 subfolders and 57255 files --
+with 1 critical and 0 warnings
+2026-03-10 18:45:00.099 INFO   - Grand total of 1 critical and 1 warnings -- Scanned 8589
+subfolders and 80639 files -- Scan time: 00:00:00.040
 ```
 
 If we wanted to specify a different configuration file we can do so by indicating it as a parameter in the command line. For example:

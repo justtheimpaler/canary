@@ -33,7 +33,7 @@ public class Scanner {
         ScannerStats stats = new ScannerStats();
         scanFolder(dir, r, stats);
         log.info(" - Stats: scanned " + stats.getTotalSubfolders() + " subfolders and " + stats.getTotalFiles()
-            + " files --  with " + stats.getTotalCriticals() + " critical and " + stats.getTotalWarnings()
+            + " files -- with " + stats.getTotalCriticals() + " critical and " + stats.getTotalWarnings()
             + " warnings");
         totalStats.aggregate(stats);
       }
