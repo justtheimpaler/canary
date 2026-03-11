@@ -1,35 +1,41 @@
 # Canary
 
-Canary searches for folders that can have a growing number of files and subfolders in them. Its goal is to detect if folders are silently growing beyond a predefined size threshold, something that could potentially make one or more applications slow or even crash.
+Canary searches for folders that can have a growing number of files and/or subfolders in them. Its goal is to detect if folders are silently growing beyond predefined size thresholds, something that could potentially make applications that use them slow, unstable, or even crash.
 
-Canary can be run discretionally or periodically as an automated process. It scans all the subfolders of one or more root folder, according to the configuration, and logs warnings and critical messages when they exceed the threshold specified in the rules. This log could potentionally be connected to monitoring tools to produce alerts for these findings.
+Canary can be run discretionally or periodically as an automated process. It scans the subfolder tree of one or more root folders, as indicated in the configuration, and logs warnings and critical messages when they exceed the thresholds specified in the rules. This log could potentionally be fed to monitoring tools to produce alerts for these findings.
 
 ## Setup
 
 To use this tool you need:
 
-- Access to the command line.
-- Java 8 or newer installed.
-- A folder (the working folder) where to install the tool and the configuration file.
+- Access to the command line
+- Java 8 or newer installed
+- A folder (the working folder) where to install the tool and the configuration file
 
 To use it follow the steps:
 
-### Step 1 - Download This Tool
+### Step 1 - The Working Folder
+
+Create an empty working folder. You'll copy the JAR file for this tool in it and then you'll create a configuration file.
+
+### Step 2 - Download This Tool
 
 Get the tool from Maven Central at [search results](https://central.sonatype.com/search?q=canary) and place it in the work folder.
 
 Copy the JAR file into the working folder.
 
-### Step 2 - Add Configuration File
+### Step 3 - Add Configuration File
 
-The configuration is specified using YAML format. The default name of the configuration file is `canary.yaml`. This file will define one or more base folders to scan (the "root" folders) and their properties.
+The configuration is specified using YAML format. The default name of the configuration file is `canary.yaml`. This file will define one or more base folders to scan &mdash; the "root" folders &mdash; and their properties.
 
-Starting in these folders Canary will scan all its subfolders to count file entries (i.e. files and subfolders). The configuration can specify one or more exclusion rules for this scan; these exclusion rules can take the form of:
+Taking these root folders as starting points Canary will scan all its subfolders to count file entries (i.e. files and subfolders).
 
-- A regular expression to match a subfolder's name
-- A relative path for a specific folder
+The configuration can specify one or more exclusion rules for this scan; these exclusion rules can take the form of:
 
-For example, if we wanted to scan starting from two root folders (`/var/apps/myfolder` and `/opt/shared/logs`), the configuration file can take the form:
+- Regular expressions to match subfolder names
+- Relative paths of specific folders
+
+For example, if we wanted to scan starting from two root folders (`/var/apps/myfolder` and `/opt/shared/logs`), the YAML configuration file can take the form:
 
 ```yaml
 ---
@@ -55,12 +61,13 @@ The following table define their details:
 | warningThreshold  | Optional. The warning count. Any folder or subfolder that exceeds this count will trigger a warning message | 5000 |
 | criticalThreshold  | Optional. The critical count. Any folder or subfolder that exceeds this count will trigger a critical message  | 10000 |
 
-As specified above, only the `root` property is mandatory for each root folder configuration.
+> [!TIP]
+> Since the configuration file is a YAML file, the properties can be escaped using the YAML syntax rules. This can be especially useful if the folders include non-typical characters in their names, such as (, ), =, :, ;, etc.
 
-**Note**: Since the configuration file is a YAML file, the properties can be escaped using the YAML syntax rules. This can be especially useful if the folders include non-typical characters in their names, such as (, ), =, :, ;, etc.
+As indicated above, only the `root` property is mandatory for each root folder configuration.
 
-The default thresholds err in the side of caution. Local drives can typically absorb much higher loads, while networked drives have lower capacities. Nowadays, with the current cloud solutions, this 
-limitation is further lowered by the cheaper and cheaper commodity hardware options that are terrible attractive to IT managers, but at the same time, can have silent limitations.
+> [!NOTE]
+> The default thresholds err in the side of caution. Local drives can typically absorb much higher loads, while networked drives have lower capacities. Nowadays, with the current cloud solutions, this limitation is further lowered by the cheaper and cheaper commodity hardware options that are terrible attractive to IT managers, but at the same time, can have silent limitations.
 
 We could tweak the example above with a full configuration for the first root folder. We can decide to:
 
@@ -81,7 +88,7 @@ criticalThreshold: 6000
 root: /opt/shared/logs
 ```
 
-In this example we specified all the properties for the first root folder, while the second use use the default values for them.
+In this example we specified all the optional properties for the first root folder. The second one, on the other hand, uses the default settings.
 
 ## Running This Tool
 
@@ -104,7 +111,7 @@ It will start scanning all root folders and subfolders and will show any warning
 2026-03-10 18:45:00.099 INFO   - Grand total of 1 critical and 1 warnings -- Scanned 8589 subfolders and 80639 files -- Scan time: 00:00:00.040
 ```
 
-If we wanted to specify a different configuration file we can do so by indicating it as a parameter in the command line:
+If we wanted to specify a different configuration file we can do so by indicating it as a parameter in the command line. For example:
 
 ```bash
 java -jar canary-1.0.0.jar ./config/data-rules.yaml
