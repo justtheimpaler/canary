@@ -3,7 +3,7 @@
 
   <groupId>org.nocrala</groupId>
   <artifactId>canary</artifactId>
-  <version>1.0.3</version>
+  <version>1.0.4-SNAPSHOT</version>
 
   <name>Canary - Alert about silently growing folders</name>
 
@@ -57,7 +57,7 @@
   <scm>
     <developerConnection>scm:git:git@github.com:justtheimpaler/canary.git</developerConnection>
     <url>https://github.com/justtheimpaler/canary</url>
-    <tag>1.0.3</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <distributionManagement>
