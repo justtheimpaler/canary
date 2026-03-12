@@ -20,23 +20,26 @@ public class Scanner {
   }
 
   public void scan(ScannerStats totalStats) {
+    int i = 1;
     for (Root r : this.roots) {
       File dir = new File(r.getRoot());
       if (!dir.exists()) {
-        log.log(Level.SEVERE, "Invalid root folder: " + dir + "; this folder doesn't exist.");
+        log.log(Level.SEVERE, "Invalid root folder #" + i + ": " + dir + "; this folder doesn't exist.");
         totalStats.countCritical();
       } else if (!dir.isDirectory()) {
-        log.log(Level.SEVERE, "Invalid root folder: " + dir + "; a file with that name exits, but it's not a folder.");
+        log.log(Level.SEVERE,
+            "Invalid root folder #" + i + ": " + dir + "; a file with that name exits, but it's not a folder.");
         totalStats.countCritical();
       } else {
-        log.info("Scanning root folder: " + dir);
+        log.info("Scanning root folder #" + i + ": " + dir);
         ScannerStats stats = new ScannerStats();
         scanFolder(dir, r, stats);
-        log.info(" - Stats: scanned " + stats.getTotalSubfolders() + " subfolders and " + stats.getTotalFiles()
+        log.info(" * Summary: scanned " + stats.getTotalSubfolders() + " subfolders and " + stats.getTotalFiles()
             + " files -- with " + stats.getTotalCriticals() + " critical and " + stats.getTotalWarnings()
             + " warnings");
         totalStats.aggregate(stats);
       }
+      i++;
     }
   }
 
@@ -44,11 +47,11 @@ public class Scanner {
     File[] files = dir.listFiles();
     if (files != null) {
       if (files.length > root.getCriticalThreshold()) {
-        log.log(Level.SEVERE, "The folder " + dir + " has " + files.length
+        log.log(Level.SEVERE, " * The folder " + dir + " has " + files.length
             + " files in it, and that exceeds the critical threshold of " + root.getCriticalThreshold() + ".");
         stats.countCritical();
       } else if (files.length > root.getWarningThreshold()) {
-        log.warning("The folder " + dir + " has " + files.length
+        log.warning(" * The folder " + dir + " has " + files.length
             + " files in it, and that exceeds the warning threshold of " + root.getWarningThreshold() + ".");
         stats.countWarning();
       }

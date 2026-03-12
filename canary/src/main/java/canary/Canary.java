@@ -14,6 +14,8 @@ public class Canary {
 
   private static final Logger log = Logger.getLogger(Canary.class.getName());
 
+  private static final String DEFAULT_CONFIG_FILE = "canary.yaml";
+
   static {
     JULCustomFormatter.initialize();
   }
@@ -23,10 +25,12 @@ public class Canary {
     BuildInformation buildInformation = loadBuildInformation();
     log.info("Canary " + buildInformation.getVersion() + " - build " + buildInformation.getBuildId());
 
-    String configFile = args.length == 0 ? null : args[0];
+    String configFile = args.length == 0 ? DEFAULT_CONFIG_FILE : args[0];
+    log.info("Loading configuration from: " + configFile);
     List<Root> roots;
     try {
       roots = Root.load(configFile);
+      log.info("Roots: " + roots.size() + " roots to scan");
     } catch (FileNotFoundException e) {
       log.log(Level.SEVERE, e.getMessage());
       log.info("Aborting scan.");
@@ -41,7 +45,6 @@ public class Canary {
     long start = System.currentTimeMillis();
     s.scan(totalStats);
     long elapsed = System.currentTimeMillis() - start;
-
     log.info("Grand total of " + totalStats.getTotalCriticals() + " critical and " + totalStats.getTotalWarnings()
         + " warnings -- Scanned " + totalStats.getTotalSubfolders() + " subfolders and " + totalStats.getTotalFiles()
         + " files -- Scan time: " + formatDuration(elapsed));

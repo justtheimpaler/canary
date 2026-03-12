@@ -25,7 +25,6 @@ public class Root {
 
   private static final Logger log = Logger.getLogger(Root.class.getName());
 
-  private static final String DEFAULT_CONFIG_FILE = "canary.yaml";
   private static final long DEFAULT_WARNING_THRESHOLD = 5000;
   private static final long DEFAULT_CRITICAL_THRESHOLD = 10000;
 
@@ -42,16 +41,8 @@ public class Root {
   private List<Pattern> namePatterns;
   private Set<String> pathsExclusions;
 
-  public static List<Root> load() throws IOException {
-    return load(DEFAULT_CONFIG_FILE);
-  }
-
   public static List<Root> load(String configFile) throws IOException {
-    if (configFile == null) {
-      configFile = DEFAULT_CONFIG_FILE;
-    }
     Yaml yaml = new Yaml(new Constructor(Root.class, new LoaderOptions()));
-//    Yaml yaml = new Yaml(new SafeConstructor(Root.class, new LoaderOptions()));
     List<Root> roots = new ArrayList<>();
     File config = new File(configFile);
     if (!config.exists()) {
@@ -64,7 +55,6 @@ public class Root {
           roots.add(root);
           root.validate();
         }
-        log.info("Loaded configuration from: " + configFile + " (" + roots.size() + " root folders to scan)");
       }
     }
 
@@ -77,8 +67,8 @@ public class Root {
         : Arrays.stream(this.excludeNamePatterns).map(n -> Pattern.compile(n)).collect(Collectors.toList());
     this.pathsExclusions = this.excludePaths == null ? new HashSet<>()
         : Arrays.stream(this.excludePaths).collect(Collectors.toSet());
-    this.warnThreshold = this.warningThreshold == null ? DEFAULT_WARNING_THRESHOLD : this.getWarningThreshold();
-    this.critThreshold = this.criticalThreshold == null ? DEFAULT_CRITICAL_THRESHOLD : this.getCriticalThreshold();
+    this.warnThreshold = this.warningThreshold == null ? DEFAULT_WARNING_THRESHOLD : this.warningThreshold;
+    this.critThreshold = this.criticalThreshold == null ? DEFAULT_CRITICAL_THRESHOLD : this.criticalThreshold;
   }
 
   public boolean excludes(File f) {

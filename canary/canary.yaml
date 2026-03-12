@@ -1,9 +1,9 @@
 ---
 root: ../../hf
-#excludeNamePatterns: [ abc,def2,type.* ]
-#excludePaths: [xyz,yuv   ]
-#warningThreshold: 50
-#criticalThreshold: 100
+excludeNamePatterns: [ abc,def2,type.* ]
+excludePaths: [xyz,yuv   ]
+warningThreshold: 5
+criticalThreshold: 10
 ---
 root: folder2
 excludeNamePatterns: [ abc,def ]
