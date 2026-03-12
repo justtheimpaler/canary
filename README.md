@@ -18,9 +18,9 @@ To use it follow the steps:
 
 Create an empty working folder. You'll copy the JAR file for this tool in it and then you'll create a configuration file.
 
-### Step 2 - Download This Tool
+### Step 2 - Download Canary
 
-Get the tool from Maven Central at [search results](https://central.sonatype.com/search?q=canary) and place it in the work folder.
+You can download Canary from [Maven Central](https://central.sonatype.com/artifact/org.nocrala/canary) or any of the mirrors and place it in the work folder.
 
 Copy the JAR file into the working folder.
 
@@ -58,20 +58,17 @@ The following table define their details:
 | Property | Description | Default |
 | --  | -- | -- |
 | root  | The root folder where the scan starts. All subfolders of it will be scanned, safe for subfolders that match the exclusion rules, if any | -- |
-| excludeNamePatterns | Optional. The list of regular expression patterns to match to the subfolders. If a subfolder name matches one patter it's ignored | No subfolders are ignored |
-| excludePaths | Optional. The list of paths to ignore. These paths are relative to the correspondig root folder | No paths are ignored |
+| excludeNamePatterns | Optional. A list of regular expression patterns to match to the subfolders by name. If a subfolder matches a pattern it's excluded from the scan | No subfolders are ignored |
+| excludePaths | Optional. The list of paths to ignore. These paths are relative to the each root folder | No paths are ignored |
 | warningThreshold  | Optional. The warning count. Any folder or subfolder that exceeds this count will trigger a warning message | 5000 |
 | criticalThreshold  | Optional. The critical count. Any folder or subfolder that exceeds this count will trigger a critical message  | 10000 |
-
-> [!TIP]
-> Since the configuration file is a YAML file, the properties can be escaped using the YAML syntax rules. This can be especially useful if the folders include non-typical characters in their names, such as (, ), =, :, ;, etc.
 
 As indicated above, only the `root` property is mandatory for each root folder configuration.
 
 We could tweak the example above with a full configuration for the first root folder. We can decide to:
 
 - Exclude any subfolders that end in `backup` or start with `attic`
-- Exclude the subfolders `prod1/data1`, `prod2/data2`, and `prod3/data3`
+- Exclude the subfolders `prod1/data1`, `prod #2/docs`, and `prod3/backup-2025/data3`
 - Define the warning count as 2000 and the critical count as 6000.
 
 In this case, the configuration could take the form:
@@ -80,7 +77,7 @@ In this case, the configuration could take the form:
 ---
 root: /var/apps/myfolder
 excludeNamePatterns: [ .*backup, attic.* ]
-excludePaths: [ prod1/data1, prod2/data2, prod3/data3 ]
+excludePaths: [ prod1/data1, "prod #2/docs", "prod3/backup-2025/data3" ]
 warningThreshold: 2000
 criticalThreshold: 6000
 ---
@@ -88,6 +85,10 @@ root: /opt/shared/logs
 ```
 
 In this example we specified all the optional properties for the first root folder. The second one, on the other hand, uses the default settings.
+
+> [!TIP]
+> Note that the second and third paths are enclosed in double quotes according to the YAML syntax rules. In YAML the symbols # (pound) and - (dash) &mdash; as well as others &mdash; have meaning so they need to be escaped to use them as literals.
+
 
 ## Running This Tool
 
