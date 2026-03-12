@@ -77,7 +77,7 @@ In this case, the configuration could take the form:
 ---
 root: /var/apps/myfolder
 excludeNamePatterns: [ .*backup, attic.* ]
-excludePaths: [ prod1/data1, "prod #2/docs", "prod3/backup-2025/data3" ]
+excludePaths: [ prod1/data1, 'prod #2/docs', 'prod3/backup-2025/data3' ]
 warningThreshold: 2000
 criticalThreshold: 6000
 ---
