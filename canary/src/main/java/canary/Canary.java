@@ -54,13 +54,9 @@ public class Canary {
 
   private static BuildInformation buildInformation = null;
 
-  public static BuildInformation loadBuildInformation() {
+  public static synchronized BuildInformation loadBuildInformation() {
     if (buildInformation == null) {
-      synchronized (Canary.class) {
-        if (buildInformation == null) {
-          buildInformation = new BuildInformation();
-        }
-      }
+      buildInformation = new BuildInformation();
     }
     return buildInformation;
   }
