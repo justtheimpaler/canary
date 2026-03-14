@@ -4,6 +4,7 @@ public class ScannerStats {
 
   private long totalSubfolders = 0;
   private long totalFiles = 0;
+  private long totalBytes = 0;
   private long totalWarnings = 0;
   private long totalCriticals = 0;
 
@@ -12,6 +13,7 @@ public class ScannerStats {
   public void aggregate(ScannerStats other) {
     this.totalSubfolders += other.totalSubfolders;
     this.totalFiles += other.totalFiles;
+    this.totalBytes += other.totalBytes;
     this.totalWarnings += other.totalWarnings;
     this.totalCriticals += other.totalCriticals;
   }
@@ -24,6 +26,10 @@ public class ScannerStats {
 
   public void countFile() {
     this.totalFiles++;
+  }
+
+  public void addBytes(long bytes) {
+    this.totalBytes += bytes;
   }
 
   public void countWarning() {
@@ -42,6 +48,10 @@ public class ScannerStats {
 
   public long getTotalFiles() {
     return totalFiles;
+  }
+
+  public long getTotalBytes() {
+    return totalBytes;
   }
 
   public long getTotalWarnings() {

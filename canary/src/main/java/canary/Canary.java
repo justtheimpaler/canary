@@ -1,5 +1,6 @@
 package canary;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
@@ -20,10 +21,12 @@ public class Canary {
     JULCustomFormatter.initialize();
   }
 
-  public static void main(String[] args) throws IOException {
+  public static BuildInformation BUILD_INFO;
 
-    BuildInformation buildInformation = loadBuildInformation();
-    log.info("Canary " + buildInformation.getVersion() + " - build " + buildInformation.getBuildId());
+  public static void main(String[] args) throws IOException {
+    BUILD_INFO = new BuildInformation();
+
+    log.info("Canary " + BUILD_INFO.getVersion() + " - build " + BUILD_INFO.getBuildId());
 
     String configFile = args.length == 0 ? DEFAULT_CONFIG_FILE : args[0];
     log.info("Loading configuration from: " + configFile);
@@ -52,30 +55,28 @@ public class Canary {
 
   // Build Information retrieval
 
-  private static BuildInformation buildInformation = null;
-
-  public static synchronized BuildInformation loadBuildInformation() {
-    if (buildInformation == null) {
-      buildInformation = new BuildInformation();
-    }
-    return buildInformation;
-  }
-
   public static class BuildInformation {
+
+    private static final String BUILD_INFORMATION_PROPERTIES = "build-information.propertises";
 
     private String version = null;
     private String buildId = null;
 
     // Constructor
 
-    BuildInformation() {
+    BuildInformation() throws IOException {
       try {
         Properties props = new Properties();
-        props.load(ClassLoader.getSystemResourceAsStream("build-information.properties"));
+        File p = new File(BUILD_INFORMATION_PROPERTIES);
+        if (!p.exists()) {
+          throw new FileNotFoundException("Could not find build information.");
+        }
+        props.load(ClassLoader.getSystemResourceAsStream(BUILD_INFORMATION_PROPERTIES));
         this.version = (String) props.get("version");
         this.buildId = (String) props.get("build.id");
-      } catch (IOException e) {
-        // Do nothing
+      } catch (RuntimeException | IOException e) {
+        log.log(Level.INFO, "Could not read the build information file.", e);
+        throw e;
       }
     }
 

@@ -46,13 +46,13 @@ public class Scanner {
   private void scanFolder(File dir, Root root, ScannerStats stats) {
     File[] files = dir.listFiles();
     if (files != null) {
-      if (files.length > root.getCriticalThreshold()) {
+      if (files.length >= root.getCriticalThreshold()) {
         log.log(Level.SEVERE, " * The folder " + dir + " has " + files.length
-            + " files in it, and that exceeds the critical threshold of " + root.getCriticalThreshold() + ".");
+            + " files in it, and that reached the critical threshold of " + root.getCriticalThreshold() + ".");
         stats.countCritical();
-      } else if (files.length > root.getWarningThreshold()) {
+      } else if (files.length >= root.getWarningThreshold()) {
         log.warning(" * The folder " + dir + " has " + files.length
-            + " files in it, and that exceeds the warning threshold of " + root.getWarningThreshold() + ".");
+            + " files in it, and that reached the warning threshold of " + root.getWarningThreshold() + ".");
         stats.countWarning();
       }
       for (File f : files) {
