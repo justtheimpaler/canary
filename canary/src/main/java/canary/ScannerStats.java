@@ -24,11 +24,8 @@ public class ScannerStats {
     this.totalSubfolders++;
   }
 
-  public void countFile() {
+  public void countFile(long bytes) {
     this.totalFiles++;
-  }
-
-  public void addBytes(long bytes) {
     this.totalBytes += bytes;
   }
 

@@ -1,6 +1,7 @@
 package canary;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +21,7 @@ public class Scanner {
   }
 
   public void scan(ScannerStats totalStats) {
+    DecimalFormat fmt = new DecimalFormat("#,##0");
     int i = 1;
     for (Root r : this.roots) {
       File dir = new File(r.getRoot());
@@ -34,9 +36,10 @@ public class Scanner {
         log.info("Scanning root folder #" + i + ": " + dir);
         ScannerStats stats = new ScannerStats();
         scanFolder(dir, r, stats);
-        log.info(" * Summary: scanned " + stats.getTotalSubfolders() + " subfolders and " + stats.getTotalFiles()
-            + " files -- with " + stats.getTotalCriticals() + " critical and " + stats.getTotalWarnings()
-            + " warnings");
+        log.info(" * Summary: " + fmt.format(stats.getTotalCriticals()) + " criticals and "
+            + fmt.format(stats.getTotalWarnings()) + " warnings -- " + fmt.format(stats.getTotalSubfolders())
+            + " subfolders, " + fmt.format(stats.getTotalFiles()) + " files, " + fmt.format(stats.getTotalBytes())
+            + " bytes");
         totalStats.aggregate(stats);
       }
       i++;
@@ -62,7 +65,7 @@ public class Scanner {
             scanFolder(f, root, stats);
           }
         } else {
-          stats.countFile();
+          stats.countFile(f.length());
         }
       }
     }

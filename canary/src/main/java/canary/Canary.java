@@ -1,8 +1,8 @@
 package canary;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -48,16 +48,18 @@ public class Canary {
     long start = System.currentTimeMillis();
     s.scan(totalStats);
     long elapsed = System.currentTimeMillis() - start;
-    log.info("Grand total of " + totalStats.getTotalCriticals() + " critical and " + totalStats.getTotalWarnings()
-        + " warnings -- Scanned " + totalStats.getTotalSubfolders() + " subfolders and " + totalStats.getTotalFiles()
-        + " files -- Scan time: " + formatDuration(elapsed));
+    DecimalFormat fmt = new DecimalFormat("#,##0");
+    log.info("Grand total of " + fmt.format(totalStats.getTotalCriticals()) + " criticals and "
+        + fmt.format(totalStats.getTotalWarnings()) + " warnings -- Scanned "
+        + fmt.format(totalStats.getTotalSubfolders()) + " subfolders, " + fmt.format(totalStats.getTotalFiles())
+        + " files, " + fmt.format(totalStats.getTotalBytes()) + " bytes -- Scan time: " + formatDuration(elapsed));
   }
 
   // Build Information retrieval
 
   public static class BuildInformation {
 
-    private static final String BUILD_INFORMATION_PROPERTIES = "build-information.propertises";
+    private static final String BUILD_INFORMATION_PROPERTIES = "build-information.properties";
 
     private String version = null;
     private String buildId = null;
@@ -67,10 +69,6 @@ public class Canary {
     BuildInformation() throws IOException {
       try {
         Properties props = new Properties();
-        File p = new File(BUILD_INFORMATION_PROPERTIES);
-        if (!p.exists()) {
-          throw new FileNotFoundException("Could not find build information.");
-        }
         props.load(ClassLoader.getSystemResourceAsStream(BUILD_INFORMATION_PROPERTIES));
         this.version = (String) props.get("version");
         this.buildId = (String) props.get("build.id");
