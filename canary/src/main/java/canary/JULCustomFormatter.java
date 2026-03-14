@@ -2,7 +2,10 @@ package canary;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -11,15 +14,13 @@ import java.util.logging.Logger;
 
 public class JULCustomFormatter extends Formatter {
 
-  private final SimpleDateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+  private static final DateTimeFormatter DTFMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
   public static void initialize() {
     Logger root = Logger.getLogger("");
-//    root.setLevel(level);
     JULCustomFormatter f = new JULCustomFormatter();
     for (Handler handler : root.getHandlers()) {
       handler.setFormatter(f);
-//      handler.setLevel(level);
     }
   }
 
@@ -36,7 +37,8 @@ public class JULCustomFormatter extends Formatter {
   }
 
   private void appendDateTime(LogRecord record, StringBuilder builder) {
-    builder.append(DF.format(record.getMillis()));
+    LocalDateTime dateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(record.getMillis()), ZoneId.systemDefault());
+    builder.append(dateTime.format(DTFMT));
   }
 
   private void appendLevel(LogRecord record, StringBuilder builder) {
@@ -63,6 +65,7 @@ public class JULCustomFormatter extends Formatter {
     }
   }
 
+  @SuppressWarnings("unused")
   private void appendClassNameAndLineNumber(LogRecord record, StringBuilder builder) {
     StackTraceElement caller = findCaller(Thread.currentThread().getStackTrace());
     if (caller != null) {
